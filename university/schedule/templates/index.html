@@ -1,0 +1,67 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+    <p>Добро пожаловать на наш сайт с каталогом курсов!</p>
+
+    <h2>Популярные курсы:</h2>
+    <ul>
+        {% for course in courses %}
+        <div class="course-item">
+            <h3><a href="{% url 'course_detail' course_slug=course.slug %}">{{ course.title }}</a></h3>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Курсы пока не добавлены.</p>
+    </ul>
+    <p><a href="{% url 'Course' %}">Все курсы...</a></p>
+<hl>Преподаватели</hl>
+
+<ul>
+    {% for teacher in teachers %}
+      <li>{{ teacher.first_name }} {{teacher.last_name}}</li>
+    {% empty %}
+      <li>Преподаватели не найдены</li>
+    {% endfor %}
+</ul>
+
+</body>
+
+{% extends 'catalog/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+    <p>Добро пожаловать на наш сайт с каталогом курсов!</p>
+
+    <h2>Популярные курсы:</h2>
+    {% if courses %}
+        {% for course in courses %}
+        <div class="course-item">
+            <h3><a href="{% url 'course_detail' course_slug=course.slug %}">{{ course.title }}</a></h3>
+            <p>{{ course.description|slice:":100" }}...</p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Курсы пока не добавлены.</p>
+    {% endif %}
+    <p><a href="{% url 'courses' %}">Все курсы...</a></p>
+
+    <h2>Лучшие авторы:</h2>
+    {% if authors %}
+        {% for author in authors %}
+        <div class="author-item">
+            <h3><a href="{% url 'author_detail' author_id=author.id %}">{{ author.name }}</a></h3>
+            <p>{{ author.bio|slice:":100" }}...</p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Авторы пока не добавлены.</p>
+    {% endif %}
+     <p><a href="{% url 'authors' %}">Все авторы...</a></p>
+{% endblock %}

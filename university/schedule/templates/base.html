@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}База данных университета{% endblock %}</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        nav { margin-bottom: 20px; padding: 10px; background-color: #f0f0f0; }
+        nav a { margin-right: 15px; text-decoration: none; color: #333; }
+        nav a:hover { color: #007bff; }
+        .content { border: 1px solid #ccc; padding: 20px; }
+        .course-item, .author-item { margin-bottom: 15px; padding: 10px; border: 1px dashed #eee; }
+        .course-item h3, .author-item h3 { margin-top: 0; }
+        .error-message { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'index' %}">Главная</a>
+        <a href="{% url 'Course' %}">Курсы</a>
+        <a href="{% url 'Teacher' %}">Преподаватели</a>
+        <a href="{% url 'Student' %}">Студенты</a>
+        <a href="{% url 'info' %}">Info</a>
+    </nav>
+
+    <div class="content">
+        <h1>{% block header %}{% endblock %}</h1>
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer>
+        <p>© 2026 База данных университета</p>
+    </footer>
+</body>
+</html>
