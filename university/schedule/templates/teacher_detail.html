@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+{% if teacher %}
+    <h2>Имя: {{  teacher.first_name  }}</h2>
+    <h2>Фамилия: {{  teacher.last_name  }}</h2>
+    <h2>Номер телефона: {{ teacher.phone_number }}</h2>
+    <h2>Активен? (1-да, 0-нет): {{ teacher.is_active }}</h2>
+
+    <p>Почта: {{ teacher.email }}</p>
+    <p>Кафедра: {{ teacher.departament }}</p>
+    <p>Ученая степень: {{ info.academic_degree }}</p>
+    <p>Стаж работы: {{ info.years_to_experience }}</p>
+
+    <h3>Курсы, которые преподает преподаватель:</h3>
+        {% if teacher_courses %}
+            <ul>
+                {% for course in teacher_courses %}
+                    <li><a href="{% url 'course_detail' course.id %}">{{ course.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Преподаватель пока не преподает курсы.</p>
+        {% endif %}
+
+    <h2>{{ info.bio }}</h2>
+
+    <p><a href="{% url 'update' teacher.id %}">Изменить информацию о преподавателе</a></p>
+    <p><a href="{% url 'teachers' %}">Назад к списку преподавателей</a></p>
+
+{% else %}
+        <p class="error-message">Преподаватель не найден.</p>
+        <p><a href="{% url 'teachers' %}">Назад к списку преподавателей</a></p>
+{% endif %}
+{% endblock %}

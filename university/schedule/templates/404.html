@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}Страница не найдена{% endblock %}
+
+{% block header %}Страница не найдена (Ошибка 404){% endblock %}
+
+{% block content %}
+    <p class="error-message">К сожалению, запрошенная вами страница не существует.</p>
+    <p>Пожалуйста, вернитесь на <a href="{% url 'index' %}">главную страницу</a>.</p>
+{% endblock %}

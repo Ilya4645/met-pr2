@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}База данных университета{% endblock %}</title>
+    <title>{% block title %}Каталог Курсов{% endblock %}</title>
     <style>
         body { font-family: sans-serif; margin: 20px; }
         nav { margin-bottom: 20px; padding: 10px; background-color: #f0f0f0; }
@@ -18,10 +18,8 @@
 <body>
     <nav>
         <a href="{% url 'index' %}">Главная</a>
-        <a href="{% url 'Course' %}">Курсы</a>
-        <a href="{% url 'Teacher' %}">Преподаватели</a>
-        <a href="{% url 'Student' %}">Студенты</a>
-        <a href="{% url 'info' %}">Info</a>
+        <a href="{% url 'courses' %}">Курсы</a>
+        <a href="{% url 'teachers' %}">Преподаватели</a>
     </nav>
 
     <div class="content">
@@ -31,7 +29,7 @@
     </div>
 
     <footer>
-        <p>© 2026 База данных университета</p>
+        <p>© 2026 Каталог Курсов</p>
     </footer>
 </body>
 </html>

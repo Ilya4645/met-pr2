@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+  {% if course %}
+        <h2>{{ course.title }}</h2>
+        <p>{{ course.description }}</p>
+        <h2>Дата начала курса: {{ course.start_date }}</h2>
+        <h2>Дата окончания курса: {{ course.end_date }}</h2>
+        {% if teacher %}
+            <p><strong>Преподаватель:</strong> <a href="{% url 'teacher_detail' teacher.id %}">{{ teacher.first_name }} {{ teacher.last_name }}</a></p>
+        {% else %}
+            <p><strong>Преподаватель:</strong> (неизвестен)</p>
+        {% endif %}
+        <p><a href="{% url 'courses' %}">Назад к списку курсов</a></p>
+    {% else %}
+        <p class="error-message">Курс не найден.</p>
+        <p><a href="{% url 'courses' %}">Перейти к списку курсов</a></p>
+    {% endif %}
+{% endblock %}

@@ -22,3 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('schedule.urls')),
 ]
+
+handler404 = 'schedule.views.page_not_found_view'
