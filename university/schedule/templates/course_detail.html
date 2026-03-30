@@ -15,6 +15,9 @@
         {% else %}
             <p><strong>Преподаватель:</strong> (неизвестен)</p>
         {% endif %}
+        <p><a href="{% url 'course_update' course.id %}">Изменить информацию о курсе</a></p>
+        <p><a href="{%url 'course_delete' course.id %}">Удалить курс</a></p>
+
         <p><a href="{% url 'courses' %}">Назад к списку курсов</a></p>
     {% else %}
         <p class="error-message">Курс не найден.</p>

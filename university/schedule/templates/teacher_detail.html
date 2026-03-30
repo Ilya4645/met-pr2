@@ -6,6 +6,7 @@
 
 {% block content %}
 {% if teacher %}
+    <h2>ID: {{ teacher.id }}</h2>
     <h2>Имя: {{  teacher.first_name  }}</h2>
     <h2>Фамилия: {{  teacher.last_name  }}</h2>
     <h2>Номер телефона: {{ teacher.phone_number }}</h2>
@@ -30,6 +31,7 @@
     <h2>{{ info.bio }}</h2>
 
     <p><a href="{% url 'update' teacher.id %}">Изменить информацию о преподавателе</a></p>
+    <p><a href="{% url 'delete' teacher.id %}">Удалить информацию о преподавателе</a></p>
     <p><a href="{% url 'teachers' %}">Назад к списку преподавателей</a></p>
 
 {% else %}

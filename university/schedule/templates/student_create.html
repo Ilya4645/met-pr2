@@ -5,7 +5,7 @@
 {% block header %}{{ title }}{% endblock %}
 
 {% block content %}
-<hl>Обновить информацию о преподавателе {{ teacher.first_name}} {{teacher.last_name}}</hl>
+<hl>Добавить студента</hl>
 <form method="post">
   {% csrf_token %}
 
@@ -22,14 +22,14 @@
   <br><br>
 
   <label>
-    Почта:
-    <input type="text" name="email" required>
+    Дата рождения:
+    <input type="date" name="birth_date" required>
   </label>
   <br><br>
 
   <label>
-    Кафедра:
-    <input type="text" name="departament" required>
+    Email:
+    <input type="email" name="email" required>
   </label>
   <br><br>
 
@@ -39,13 +39,6 @@
   </label>
   <br><br>
 
-  <label>
-    Статус (1 - активен, 0 - заблокирован):
-    <input type="boolean" name="is_active" required>
-  </label>
-  <br><br>
-
-  <button type="submit">Обновить</button>
-
+  <button type="submit">Создать</button>
 </form>
 {% endblock %}

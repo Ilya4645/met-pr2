@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+<hl>Обновить информацию о курсе {{ course.title}}</hl>
+<form method="post">
+  {% csrf_token %}
+
+  <label>
+    Название:
+    <input type="text" name="title" required>
+  </label>
+  <br><br>
+
+  <label>
+    Описание курса:
+    <input type="text" size="1000" name="description" required>
+  </label>
+  <br><br>
+
+  <label>
+    Дата начала курса:
+    <input type="date" name="start_date" required>
+  </label>
+  <br><br>
+
+  <label>
+    Дата окончания курса:
+    <input type="date" name="end_date" required>
+  </label>
+  <br><br>
+
+  <label>
+    ID преподавателя (можно узнать в личном кабинете конкретного преподавателя):
+    <input type="number" name="teacher_id" required>
+  </label>
+  <br><br>
+
+  <button type="submit">Обновить</button>
+</form>
+{% endblock %}

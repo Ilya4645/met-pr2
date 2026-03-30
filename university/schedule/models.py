@@ -31,3 +31,10 @@ class Course(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
 
+class Student(models.Model):
+    courses = models.ManyToManyField(Course)
+    first_name = models.CharField(max_length=100, null=False)
+    last_name = models.CharField(max_length=100, null=False)
+    birth_date = models.DateField()
+    email = models.EmailField(max_length=100, null=False)
+    phone_number = models.CharField(max_length=100, null=False)

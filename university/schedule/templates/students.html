@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+  {% if students %}
+        {% for student in students %}
+        <div class="student-item">
+            <h3><a href="{% url 'student_detail' student.id %}">{{ student.first_name }} {{ student.last_name }}</a></h3>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Студенты пока не добавлены.</p>
+    {% endif %}
+<h3><a href="{% url 'student_create' %}">Добавить студента</a></h3>
+{% endblock %}

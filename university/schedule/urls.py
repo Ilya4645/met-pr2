@@ -10,4 +10,11 @@ urlpatterns = [
     path('teachers/detail/<int:teacher_id>', views.teacher_detail, name='teacher_detail'),
     path('courses/', views.courses, name='courses'),
     path('courses/detail/<int:course_id>', views.course_detail, name='course_detail'),
+    path('courses/create', views.course_create, name='course_create'),
+    path('courses/update/<int:course_id>', views.course_update, name='course_update'),
+    path('courses/delete/<int:course_id>', views.course_delete, name='course_delete'),
+    path('students/', views.students, name='students'),
+    path('students/detail/<int:student_id>', views.student_detail, name='student_detail'),
+    path('students/create', views.student_create, name='student_create'),
+    path('students/deletecourse/<int:student_id>/<int:course_id>', views.course_in_student_delete, name='course_in_student_delete'),
 ]

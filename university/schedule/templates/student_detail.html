@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+{% if student %}
+    <h2>ID: {{ student.id }}</h2>
+    <h2>Имя: {{  student.first_name  }}</h2>
+    <h2>Фамилия: {{  student.last_name  }}</h2>
+    <h2>Номер телефона: {{ student.phone_number }}</h2>
+
+    <p>Почта: {{ student.email }}</p>
+    <p>Дата рождения: {{ student.birth_date }}</p>
+
+    <h3>Курсы, на которые записан студент:</h3>
+        {% if courses_on_students %}
+            <ul>
+                {% for course in courses_on_students %}
+                    <li><a href="{% url 'course_detail' course.id %}">{{ course.title }}</a></li>
+                    <li><a href="{% url 'course_in_student_delete' student.id course.id %}">Отписаться от курса</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Студент пока не записан ни на один курс.</p>
+        {% endif %}
+
+    <p><a href="{% url 'students' %}">Назад к списку студентов</a></p>
+
+{% else %}
+        <p class="error-message">Студент не найден.</p>
+        <p><a href="{% url 'students' %}">Назад к списку студентов</a></p>
+{% endif %}
+{% endblock %}
