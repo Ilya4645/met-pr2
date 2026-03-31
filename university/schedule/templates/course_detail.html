@@ -7,6 +7,7 @@
 {% block content %}
   {% if course %}
         <h2>{{ course.title }}</h2>
+        <h2>ID курса: {{ course.id }}</h2>
         <p>{{ course.description }}</p>
         <h2>Дата начала курса: {{ course.start_date }}</h2>
         <h2>Дата окончания курса: {{ course.end_date }}</h2>
@@ -15,6 +16,17 @@
         {% else %}
             <p><strong>Преподаватель:</strong> (неизвестен)</p>
         {% endif %}
+        <p>Студенты: записанные на данный курс</p>
+        {% if students_of_course %}
+            <ul>
+            {% for student in students_of_course %}
+                <li><a href="{% url 'student_detail' student.id %}">{{ student.first_name }} {{ student.last_name }}</a></li>
+        {% endfor %}
+            </ul>
+        {% else %}
+             <p>Студенты пока не добавлены.</p>
+        {% endif %}
+
         <p><a href="{% url 'course_update' course.id %}">Изменить информацию о курсе</a></p>
         <p><a href="{%url 'course_delete' course.id %}">Удалить курс</a></p>
 

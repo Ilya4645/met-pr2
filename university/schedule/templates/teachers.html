@@ -13,5 +13,21 @@
         <h3>Преподаватели не найдены</h3>
     {% endfor %}
 </ul>
+<h3>Преподаватели, которые ведут более 2-х курсов:</h3>
+<ul>
+    {% for teacher in teachers_with_many_courses %}
+        <h3>{{ teacher.first_name }} {{ teacher.last_name }}</a></h3>
+    {% empty %}
+        <h3>Преподаватели не найдены</h3>
+    {% endfor %}
+</ul>
+<h3>Преподаватели с незаполненным профилем:</h3>
+<ul>
+    {% for teacher in teachers_without_profile %}
+        <h3>{{ teacher.first_name }} {{ teacher.last_name }}</a></h3>
+    {% empty %}
+        <h3>Преподаватели не найдены</h3>
+    {% endfor %}
+</ul>
 <h3><a href="{% url 'create' %}">Добавить преподавателя</a></h3>
 {% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+<hl>Обновить информацию о студенте {{ student.first_name }} {{ student.last_name }}</hl>
+<form method="post">
+  {% csrf_token %}
+
+  <label>
+    Имя:
+    <input type="text" name="first_name" required>
+  </label>
+  <br><br>
+
+  <label>
+    Фамилия:
+    <input type="text" name="last_name" required>
+  </label>
+  <br><br>
+
+  <label>
+    Дата рождения:
+    <input type="date" name="birth_date" required>
+  </label>
+  <br><br>
+
+  <label>
+    Email:
+    <input type="email" name="email" required>
+  </label>
+  <br><br>
+
+  <label>
+    Контактный телефон:
+    <input type="text" name="phone_number" required>
+  </label>
+  <br><br>
+
+  <button type="submit">Обновить</button>
+</form>
+{% endblock %}

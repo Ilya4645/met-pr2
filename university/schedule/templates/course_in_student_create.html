@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+<hl>Запись на курс</hl>
+<form method="post">
+  {% csrf_token %}
+
+  <label>
+    ID курса (посмотреть можно на странице курса):
+    <input type="number" name="course_id" required>
+  </label>
+  <br><br>
+
+    <button type="submit">Записаться на курс</button>
+
+</form>
+{% endblock %}

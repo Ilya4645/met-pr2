@@ -19,13 +19,15 @@
             <ul>
                 {% for course in courses_on_students %}
                     <li><a href="{% url 'course_detail' course.id %}">{{ course.title }}</a></li>
-                    <li><a href="{% url 'course_in_student_delete' student.id course.id %}">Отписаться от курса</a></li>
+                    <p><a href="{% url 'course_in_student_delete' student.id course.id %}">Отписаться от курса</a></p>
                 {% endfor %}
             </ul>
         {% else %}
             <p>Студент пока не записан ни на один курс.</p>
         {% endif %}
-
+    <p><a href="{% url 'course_in_student_create' student.id %}">Запись на курс</a></p>
+    <p><a href="{% url 'student_update' student.id %}">Обновить информацию о студенте</a></p>
+    <p><a href="{% url 'student_delete' student.id %}">Удалить информацию о студенте</a></p>
     <p><a href="{% url 'students' %}">Назад к списку студентов</a></p>
 
 {% else %}

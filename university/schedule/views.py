@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponseNotFound
+from django.db import models
 from .models import Teacher, Course, Student
 
 
@@ -12,7 +14,10 @@ def index(request):
 
 def teachers(request):
     teachers = Teacher.objects.all()
-    return render(request, 'teachers.html', {"teachers": teachers})
+    min_courses = 2
+    teachers_with_many_courses = Teacher.objects.annotate(num_courses=models.Count('course')).filter(num_courses__gt=min_courses)
+    teachers_without_profile = Teacher.objects.filter(info__isnull=True)
+    return render(request, 'teachers.html', {"teachers": teachers, 'teachers_with_many_courses': teachers_with_many_courses, 'teachers_without_profile': teachers_without_profile})
 
 def create(request):
     if request.method == 'POST':
@@ -62,9 +67,11 @@ def course_detail(request, course_id):
     course = Course.objects.get(id=course_id)
     teacher = Teacher.objects.get(id=course.teacher_id) if course else None
     if not course:
-        return render(request, 'course_detail.html', {'course': course, 'teacher': teacher}, status=404)
+        return render(request, 'course_detail.html', {'course': course, 'teacher': teacher}, status=500)
 
-    return render(request, 'course_detail.html', {'course': course, 'teacher': teacher})
+    students_of_course = Student.objects.filter(courses__id=course_id)
+
+    return render(request, 'course_detail.html', {'course': course, 'teacher': teacher, 'students_of_course': students_of_course})
 
 def course_create(request):
     if request.method == 'POST':
@@ -97,7 +104,8 @@ def course_delete(request, course_id):
 
 def students(request):
     students = Student.objects.all()
-    return render(request, 'students.html', {"students": students})
+    students_without_courses = Student.objects.filter(courses__isnull=True)
+    return render(request, 'students.html', {"students": students, 'students_without_courses': students_without_courses})
 
 def student_detail(request, student_id):
     student = Student.objects.get(id=student_id)
@@ -110,9 +118,25 @@ def student_detail(request, student_id):
 def course_in_student_delete(request, student_id, course_id):
     student = Student.objects.get(id=student_id)
     course_un_student = student.courses.get(id=course_id)
-    student.courses.remove(course_un_student)
+    if student.courses.filter(id=course_id).exists():
+        student.courses.remove(course_un_student)
+        messages.success(request, 'Вы успешно отписались от курса')
+    else:
+        messages.error(request, 'Вы не записаны на этот курс')
     return redirect('students')
 
+def course_in_student_create(request, student_id):
+    student = Student.objects.get(id=student_id)
+    if request.method == 'POST':
+        course_id = request.POST.get('course_id')
+        if student.courses.filter(id=course_id).exists():
+            return redirect('addcourse_error1')
+        elif not Course.objects.filter(id=course_id).exists():
+            return redirect('addcourse_error2')
+        else:
+            student.courses.add(course_id)
+            return redirect('addcourse_success')
+    return render(request, 'course_in_student_create.html', {'student': student})
 def student_create(request):
     if request.method == 'POST':
         Student.objects.create(
@@ -124,6 +148,38 @@ def student_create(request):
         )
         return redirect('students')
     return render(request, 'student_create.html')
+
+def student_update(request, student_id):
+    student = Student.objects.get(id=student_id)
+    if request.method == 'POST':
+        student.first_name = request.POST.get('first_name')
+        student.last_name = request.POST.get('last_name')
+        student.birth_date = request.POST.get('birth_date')
+        student.email = request.POST.get('email')
+        student.phone_number = request.POST.get('phone_number')
+        student.save()
+        return redirect('students')
+    return render(request, 'student_update.html', {'student': student})
+
+def student_delete(request, student_id):
+    student = Student.objects.get(id=student_id)
+    if student.courses.filter(id=student_id).exists():
+        return redirect('student_delete_error')
+    else:
+        student.delete()
+        return redirect('students')
+
+def student_delete_error(request):
+    return render(request, 'student_delete_error.html')
+
+def addcourse_success(request):
+    return render(request, 'addcourse_success.html')
+
+def addcourse_error1(request):
+    return render(request, 'addcourse_error1.html')
+
+def addcourse_error2(request):
+    return render(request, 'addcourse_error2.html')
 
 def page_not_found_view(request, exception):
     return render(request, '404.html', status=404)

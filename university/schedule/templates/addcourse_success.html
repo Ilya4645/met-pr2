@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+<p class="success-message">Вы успешно записались на курс!</p>
+<p><a href="{% url 'students' %}">Перейти к списку студентов</a></p>
+{% endblock %}

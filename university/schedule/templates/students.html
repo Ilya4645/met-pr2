@@ -5,6 +5,7 @@
 {% block header %}{{ title }}{% endblock %}
 
 {% block content %}
+<h3>Список студентов</h3>
   {% if students %}
         {% for student in students %}
         <div class="student-item">
@@ -14,5 +15,14 @@
     {% else %}
         <p>Студенты пока не добавлены.</p>
     {% endif %}
+
+<h3>Студенты, которые не записаны ни на один курс</h3>
+<ul>
+    {% for student in students_without_courses %}
+        <h3>{{ student.first_name }} {{ student.last_name }}</a></h3>
+    {% empty %}
+        <h3>Все студенты записаны хотя-бы на один курс</h3>
+    {% endfor %}
+</ul>
 <h3><a href="{% url 'student_create' %}">Добавить студента</a></h3>
 {% endblock %}
