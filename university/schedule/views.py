@@ -2,7 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.db import models
-from .models import Teacher, Course, Student
+from django import forms
+from django.views import View
+from .forms import TeacherForm
+from .models import Teacher, Course, Student, TeacherInfo
 
 
 def index(request):
@@ -13,14 +16,14 @@ def index(request):
 
 
 def teachers(request):
-    teachers = Teacher.objects.all()
+    teachers = Teacher.objects.prefetch_related('course').all()
     min_courses = 2
     teachers_with_many_courses = Teacher.objects.annotate(num_courses=models.Count('course')).filter(num_courses__gt=min_courses)
     teachers_without_profile = Teacher.objects.filter(info__isnull=True)
     return render(request, 'teachers.html', {"teachers": teachers, 'teachers_with_many_courses': teachers_with_many_courses, 'teachers_without_profile': teachers_without_profile})
 
-def create(request):
-    if request.method == 'POST':
+class create(View):
+    """if request.method == 'POST':
         Teacher.objects.create(
             first_name = request.POST['first_name'],
             last_name = request.POST['last_name'],
@@ -28,8 +31,35 @@ def create(request):
             departament = request.POST['departament'],
             phone_number = request.POST['phone_number'],
         )
-        return redirect('index')
-    return render(request, 'create.html')
+        return redirect('index')"""
+
+    template_name = 'create.html'
+    form_class = TeacherForm
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            email = form.cleaned_data.get('email', '')
+            departament = form.cleaned_data['departament']
+            phone_number = form.cleaned_data['phone_number']
+            bio = form.cleaned_data['bio']
+            academic_degree = form.cleaned_data['academic_degree']
+            years_to_experience = form.cleaned_data['years_to_experience']
+
+            teacher = Teacher.objects.create(first_name=first_name, last_name=last_name, email=email, departament=departament, phone_number=phone_number)
+
+            if (bio) and (academic_degree) and (years_to_experience):
+                TeacherInfo.objects.create(teacher=teacher, bio=bio, academic_degree=academic_degree, years_to_experience=years_to_experience)
+            return redirect('teachers')
+
+        else:
+            return render(request, self.template_name, {'form': form})
 
 def update(request, teacher_id):
     teacher = Teacher.objects.get(id=teacher_id)
@@ -65,7 +95,10 @@ def courses(request):
 
 def course_detail(request, course_id):
     course = Course.objects.get(id=course_id)
-    teacher = Teacher.objects.get(id=course.teacher_id) if course else None
+    try:
+        teacher = Teacher.objects.get(id=course.teacher_id) if course else None
+    except Teacher.DoesNotExist:
+        teacher = None
     if not course:
         return render(request, 'course_detail.html', {'course': course, 'teacher': teacher}, status=500)
 

@@ -16,11 +16,17 @@
     </style>
 </head>
 <body>
-    <nav>
-        <a href="{% url 'index' %}">Главная</a>
-        <a href="{% url 'courses' %}">Курсы</a>
-        <a href="{% url 'teachers' %}">Преподаватели</a>
-    </nav>
+    <header>
+         <nav>
+            <a href="{% url 'index' %}">Главная</a>
+            <a href="{% url 'courses' %}">Список курсов</a>
+            <a href="{% url 'teachers' %}">Список преподавателей</a>
+            <a href="{% url 'students' %}">Список студентов</a>
+            <a href="{% url 'create' %}">Добавить преподавателя</a>
+            <a href="{% url 'course_create' %}">Добавить курс</a>
+        </nav>
+    </header>
+
 
     <div class="content">
         <h1>{% block header %}{% endblock %}</h1>

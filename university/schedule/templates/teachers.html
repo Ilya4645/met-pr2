@@ -9,6 +9,17 @@
 <ul>
     {% for teacher in teachers %}
         <h3><a href="{% url 'teacher_detail' teacher.id %}">{{ teacher.first_name }} {{ teacher.last_name }}</a></h3>
+        <p>Email: {{ teacher.email }}</p>
+        <p>Курсы:</p>
+        {% if teacher.course.all %}
+            <ul>
+                {% for course in teacher.course.all %}
+                    <li>{{ course.title }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Преподаватель пока не преподает курсы.</p>
+        {% endif %}
     {% empty %}
         <h3>Преподаватели не найдены</h3>
     {% endfor %}

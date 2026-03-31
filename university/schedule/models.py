@@ -5,7 +5,7 @@ class Teacher(models.Model):
     last_name = models.CharField(max_length=100, null=False)
     email = models.EmailField(max_length=100, null=False)
     departament = models.CharField(max_length=100, null=False)
-    phone_number = models.CharField(max_length=100, null=False)
+    phone_number = models.CharField(max_length=100, null=False, unique=True, error_messages={'unique': "This phone_number already been registered."})
     is_active = models.BooleanField(default=True)
 
 class TeacherInfo(models.Model):
@@ -23,7 +23,8 @@ class TeacherInfo(models.Model):
 class Course(models.Model):
     teacher = models.ForeignKey(
         Teacher,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
         related_name='course'
     )
     title = models.CharField(max_length=100, null=False)

@@ -6,39 +6,18 @@
 
 {% block content %}
 <hl>Добавить преподавателя</hl>
+{% if form.errors %}
+    <div class="alert alert-danger">
+      <p>Исправьте ошибки ниже:</p>
+      {{ form.non_field_errors }}
+    </div>
+{% endif %}
+
 <form method="post">
   {% csrf_token %}
 
-  <label>
-    Имя:
-    <input type="text" name="first_name" required>
-  </label>
-  <br><br>
+  {{ form.as_p }}
 
-  <label>
-    Фамилия:
-    <input type="text" name="last_name" required>
-  </label>
-  <br><br>
-
-  <label>
-    Почта:
-    <input type="text" name="email" required>
-  </label>
-  <br><br>
-
-  <label>
-    Кафедра:
-    <input type="text" name="departament" required>
-  </label>
-  <br><br>
-
-  <label>
-    Контактный телефон:
-    <input type="text" name="phone_number" required>
-  </label>
-  <br><br>
-
-  <button type="submit">Сохранить</button>
+  <button type="submit">Добавить</button>
 </form>
 {% endblock %}
