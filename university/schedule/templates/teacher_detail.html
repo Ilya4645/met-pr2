@@ -10,13 +10,24 @@
     <h2>Имя: {{  teacher.first_name  }}</h2>
     <h2>Фамилия: {{  teacher.last_name  }}</h2>
     <h2>Номер телефона: {{ teacher.phone_number }}</h2>
-    <h2>Активен? (1-да, 0-нет): {{ teacher.is_active }}</h2>
+    <h2>Активен?: {{ teacher.is_active }}</h2>
 
     <p>Почта: {{ teacher.email }}</p>
     <p>Кафедра: {{ teacher.departament }}</p>
-    <p>Ученая степень: {{ info.academic_degree }}</p>
-    <p>Стаж работы: {{ info.years_to_experience }}</p>
+    <p>Дата рождения: {{ teacher.birth_date }}</p>
+    <p>Серия и номер паспорта: {{ teacher.pass_serial }} {{ teacher.pass_number }}</p>
+    <p>Дата выдачи паспорта: {{ teacher.pass_date }}</p>
+    <p>Кем выдан паспорт: {{ teacher.pass_issued }}</p>
 
+    <p>Образование: {{ info.education }}</p>
+    <p>Ученая степень: {{ info.academic_degree }}</p>
+    <p>Должность: {{ info.bio }}</p>
+    <p>Стаж работы: {{ info.years_to_experience }}</p>
+    <p>Дата трудоустройства: {{ info.date_of_employment }}</p>
+    <p>Семейное положение: {{ info.marital_status }}</p>
+
+    <p>Адрес регистрации: {{ info.registration_address }}</p>
+    <p>Адрес фактического проживания: {{ info.residential_address }}</p>
     <h3>Курсы, которые преподает преподаватель:</h3>
         {% if teacher_courses %}
             <ul>
@@ -38,4 +49,5 @@
         <p class="error-message">Преподаватель не найден.</p>
         <p><a href="{% url 'teachers' %}">Назад к списку преподавателей</a></p>
 {% endif %}
+<p class="error-message">ВНИМАНИЕ!!! ВСЕ ДАННЫЕ НА ДАННОЙ СТРАНИЦЕ ЯВЛЯЮТСЯ ВЫМЫШЛЕННЫМИ И НЕ ЯВЛЯЮТСЯ РЕАЛЬНЫМИ!!!.</p>
 {% endblock %}

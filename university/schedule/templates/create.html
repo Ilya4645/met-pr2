@@ -16,8 +16,37 @@
 <form method="post">
   {% csrf_token %}
 
-  {{ form.as_p }}
+  <hl><b>Основная информация</b></hl>
+
+  {% for field in teacher_form %}
+    <div class="form-group mb-3">
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.help_text %}
+            <smaill class="form-text text-muted">{{ field.help_text }}</smaill>
+        {% endif %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger" style="color: red; margin-top: 5px;">{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+    <hl><b>Дополнительная информация</b></hl>
+
+    {% for field in teacher_info_form %}
+    <div class="form-group mb-3">
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.help_text %}
+            <smaill class="form-text text-muted">{{ field.help_text }}</smaill>
+        {% endif %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger" style="color: red; margin-top: 5px;">{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endfor %}
 
   <button type="submit">Добавить</button>
 </form>
+<p class="error-message">ВНИМАНИЕ!!! НЕ УКАЗЫВАЙТЕ И НЕ ИСПОЛЬЗУЙТЕ СВОИ РЕАЛЬНЫЕ ДАННЫЕ!!!.</p>
 {% endblock %}

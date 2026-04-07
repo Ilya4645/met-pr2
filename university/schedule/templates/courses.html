@@ -9,7 +9,7 @@
         {% for course in courses %}
         <div class="course-item">
             <h3><a href="{% url 'course_detail' course.id %}">{{ course.title }}</a></h3>
-            <p>{{ course.description|slice:":100" }}...</p>
+            <p>{{ course.min_description|slice:":100" }}...</p>
         </div>
         {% endfor %}
     {% else %}

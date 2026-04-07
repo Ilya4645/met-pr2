@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponseNotFound
-from django.db import models
+from django.db import models, transaction
 from django import forms
 from django.views import View
-from .forms import TeacherForm
+from .forms import TeacherForm, TeacherInfoForm, CourseForm, StudentForm
 from .models import Teacher, Course, Student, TeacherInfo
 
 
@@ -34,36 +34,29 @@ class create(View):
         return redirect('index')"""
 
     template_name = 'create.html'
-    form_class = TeacherForm
+    form_class_teacher = TeacherForm
+    form_class_info = TeacherInfoForm
     def get(self, request, *args, **kwargs):
-        form = self.form_class()
-        return render(request, self.template_name, {'form': form})
+        teacher_form = self.form_class_teacher()
+        teacher_info_form = self.form_class_info()
+        return render(request, self.template_name, {'teacher_form': teacher_form, 'teacher_info_form': teacher_info_form})
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
+        teacher_form = self.form_class_teacher(request.POST)
+        teacher_info_form = self.form_class_info(request.POST)
 
-        if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            email = form.cleaned_data.get('email', '')
-            departament = form.cleaned_data['departament']
-            phone_number = form.cleaned_data['phone_number']
-            bio = form.cleaned_data['bio']
-            academic_degree = form.cleaned_data['academic_degree']
-            years_to_experience = form.cleaned_data['years_to_experience']
-
-            teacher = Teacher.objects.create(first_name=first_name, last_name=last_name, email=email, departament=departament, phone_number=phone_number)
-
-            if (bio) and (academic_degree) and (years_to_experience):
-                TeacherInfo.objects.create(teacher=teacher, bio=bio, academic_degree=academic_degree, years_to_experience=years_to_experience)
+        if teacher_form.is_valid() and teacher_info_form.is_valid():
+            with transaction.atomic():
+                teacher_instance = teacher_form.save()
+                teacher_info_instance = teacher_info_form.instance
+                teacher_info_instance.teacher = teacher_instance
+                teacher_info_instance.save()
             return redirect('teachers')
-
         else:
-            return render(request, self.template_name, {'form': form})
+            return render(request, self.template_name, {'teacher_form': teacher_form, 'teacher_info_form': teacher_info_form})
 
-def update(request, teacher_id):
-    teacher = Teacher.objects.get(id=teacher_id)
-    if request.method == 'POST':
+class update(View):
+    """if request.method == 'POST':
         teacher.first_name = request.POST.get('first_name')
         teacher.last_name = request.POST.get('last_name')
         teacher.email = request.POST.get('email')
@@ -72,7 +65,36 @@ def update(request, teacher_id):
         teacher.is_active = request.POST.get('is_active')
         teacher.save()
         return redirect('index')
-    return render(request, 'update.html', {'teacher': teacher})
+    return render(request, 'update.html', {'teacher': teacher})"""
+    template_name = 'update.html'
+    form_class_teacher = TeacherForm
+    form_class_info = TeacherInfoForm
+
+    def get(self, request, teacher_id, *args, **kwargs):
+        teacher = Teacher.objects.get(id=teacher_id)
+        teacher_form = self.form_class_teacher()
+        teacher_info_form = self.form_class_info()
+        return render(request, self.template_name,
+                      {'teacher_form': teacher_form, 'teacher_info_form': teacher_info_form})
+
+    def post(self, request, teacher_id, *args, **kwargs):
+        teacher = Teacher.objects.get(id=teacher_id)
+        teacher_form = self.form_class_teacher(request.POST, instance=teacher)
+        try:
+            teacher_info_instance = teacher.info
+            teacher_info_form = self.form_class_info(request.POST, instance=teacher_info_instance)
+        except TeacherInfo.DoesNotExist:
+            teacher_info_form = self.form_class_info(request.POST)
+
+        if teacher_form.is_valid() and teacher_info_form.is_valid():
+            with transaction.atomic():
+                teacher_instance = teacher_form.save()
+                teacher_info_instance = teacher_info_form.instance
+                teacher_info_instance.teacher = teacher_instance
+                teacher_info_instance.save()
+            return redirect('teachers')
+        else:
+            return render(request, self.template_name, {'teacher_form': teacher_form, 'teacher_info_form': teacher_info_form})
 
 def delete(request, teacher_id):
     teacher = Teacher.objects.get(id=teacher_id)
@@ -106,29 +128,45 @@ def course_detail(request, course_id):
 
     return render(request, 'course_detail.html', {'course': course, 'teacher': teacher, 'students_of_course': students_of_course})
 
-def course_create(request):
-    if request.method == 'POST':
-        Course.objects.create(
-            title = request.POST['title'],
-            description = request.POST['description'],
-            start_date = request.POST['start_date'],
-            end_date = request.POST['end_date'],
-            teacher_id = request.POST['teacher_id'],
-        )
-        return redirect('courses')
-    return render(request, 'course_create.html')
+class course_create(View):
+    template_name = 'course_create.html'
+    form_class_course= CourseForm
+    def get(self, request, *args, **kwargs):
+        course_form = self.form_class_course()
+        return render(request, self.template_name, {'course_form': course_form})
 
-def course_update(request, course_id):
-    course = Course.objects.get(id=course_id)
-    if request.method == 'POST':
-        course.title = request.POST.get('title')
-        course.description = request.POST.get('description')
-        course.start_date = request.POST.get('start_date')
-        course.end_date = request.POST.get('end_date')
-        course.teacher_id = request.POST.get('teacher_id')
-        course.save()
-        return redirect('courses')
-    return render(request, 'course_update.html', {'course': course})
+    def post(self, request, *args, **kwargs):
+        course_form = self.form_class_course(request.POST)
+
+        if course_form.is_valid():
+            course_form.save()
+            Course.objects.create(teacher_id = request.POST['teacher_id'],)
+            return redirect('courses')
+        else:
+            return render(request, self.template_name, {'course_form': course_form})
+
+class course_update(View):
+
+    template_name = 'course_update.html'
+    form_class_course = CourseForm
+
+    def get(self, request, course_id, *args, **kwargs):
+        course = Course.objects.get(id=course_id)
+        course_form = self.form_class_course()
+        return render(request, self.template_name,
+                      {'course_form': course_form})
+
+    def post(self, request, course_id, *args, **kwargs):
+        course = Course.objects.get(id=course_id)
+        course_form = self.form_class_course(request.POST, instance=course)
+
+        if course_form.is_valid():
+            course_form.save()
+            course.teacher_id = request.POST.get('teacher_id')
+            course.save()
+            return redirect('courses')
+        else:
+            return render(request, self.template_name, {'course_form': course_form})
 
 def course_delete(request, course_id):
     course = Course.objects.get(id=course_id)
@@ -170,29 +208,44 @@ def course_in_student_create(request, student_id):
             student.courses.add(course_id)
             return redirect('addcourse_success')
     return render(request, 'course_in_student_create.html', {'student': student})
-def student_create(request):
-    if request.method == 'POST':
-        Student.objects.create(
-            first_name = request.POST['first_name'],
-            last_name = request.POST['last_name'],
-            birth_date = request.POST['birth_date'],
-            email = request.POST['email'],
-            phone_number = request.POST['phone_number'],
-        )
-        return redirect('students')
-    return render(request, 'student_create.html')
+class student_create(View):
+    template_name = 'student_create.html'
+    form_class_student = StudentForm
+    def get(self, request, *args, **kwargs):
+        student_form = self.form_class_student()
+        return render(request, self.template_name, {'student_form': student_form})
 
-def student_update(request, student_id):
-    student = Student.objects.get(id=student_id)
-    if request.method == 'POST':
-        student.first_name = request.POST.get('first_name')
-        student.last_name = request.POST.get('last_name')
-        student.birth_date = request.POST.get('birth_date')
-        student.email = request.POST.get('email')
-        student.phone_number = request.POST.get('phone_number')
-        student.save()
-        return redirect('students')
-    return render(request, 'student_update.html', {'student': student})
+    def post(self, request, *args, **kwargs):
+        student_form = self.form_class_student(request.POST)
+
+        if student_form.is_valid():
+            cleaned_data = student_form.cleaned_data
+            cleaned_data.save()
+            return redirect('students')
+        else:
+            return render(request, self.template_name, {'student_form': student_form})
+
+
+class student_update(View):
+
+    template_name = 'student_update.html'
+    form_class_student = StudentForm
+
+    def get(self, request, student_id, *args, **kwargs):
+        student = Student.objects.get(id=student_id)
+        student_form = self.form_class_student()
+        return render(request, self.template_name,
+                      {'student_form': student_form})
+
+    def post(self, request, student_id, *args, **kwargs):
+        student = Student.objects.get(id=student_id)
+        student_form = self.form_class_student(request.POST, instance=student)
+
+        if student_form.is_valid():
+            instance = student_form.save()
+            return redirect('students')
+        else:
+            return render(request, self.template_name, {'student_form': student_form})
 
 def student_delete(request, student_id):
     student = Student.objects.get(id=student_id)

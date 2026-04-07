@@ -12,7 +12,7 @@
         {% for course in courses %}
         <div class="course-item">
             <h3><a href="{% url 'course_detail' course.id %}">{{ course.title }}</a></h3>
-            <p>{{ course.description|slice:":100" }}...</p>
+            <p>{{ course.min_description|slice:":100" }}...</p>
         </div>
         {% endfor %}
     {% else %}
@@ -31,4 +31,5 @@
         <p>Преподаватели пока не добавлены.</p>
     {% endif %}
      <p><a href="{% url 'teachers' %}">Все преподаватели...</a></p>
+<p class="error-message">ВНИМАНИЕ!!! ВСЕ ДАННЫЕ НА ДАННОМ САЙТЕ ЯВЛЯЮТСЯ ВЫМЫШЛЕННЫМИ И НЕ ЯВЛЯЮТСЯ РЕАЛЬНЫМИ!!!.</p>
 {% endblock %}

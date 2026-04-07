@@ -13,6 +13,12 @@
 
     <p>Почта: {{ student.email }}</p>
     <p>Дата рождения: {{ student.birth_date }}</p>
+    <p>Серия и номер паспорта: {{ student.pass_serial }} {{ student.pass_number }}</p>
+    <p>Дата выдачи паспорта: {{ student.pass_date }}</p>
+    <p>Кем выдан паспорт: {{ student.pass_issued }}</p>
+
+    <p>Адрес регистрации: {{ student.registration_address }}</p>
+    <p>Адрес фактического проживания: {{ student.residential_address }}</p>
 
     <h3>Курсы, на которые записан студент:</h3>
         {% if courses_on_students %}
@@ -34,4 +40,5 @@
         <p class="error-message">Студент не найден.</p>
         <p><a href="{% url 'students' %}">Назад к списку студентов</a></p>
 {% endif %}
+<p class="error-message">ВНИМАНИЕ!!! ВСЕ ДАННЫЕ НА ДАННОЙ СТРАНИЦЕ ЯВЛЯЮТСЯ ВЫМЫШЛЕННЫМИ И НЕ ЯВЛЯЮТСЯ РЕАЛЬНЫМИ!!!.</p>
 {% endblock %}
